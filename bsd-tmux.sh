@@ -5,7 +5,8 @@
 # ============================================
 
 SESSION="bsd"
-WORK_DIR="/mnt/c/Users/kyuhy/clawd"
+# 스크립트를 실행한 현재 디렉토리를 작업 공간으로 설정 (수강생 범용 지원)
+WORK_DIR="$PWD"
 
 # 환경 변수 (팀 모드 및 컬러 강제)
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
