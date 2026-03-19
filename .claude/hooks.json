@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "#!/bin/bash\nFILE=\"$CLAUDE_TOOL_INPUT_FILE_PATH\"\nif [ -n \"$FILE\" ]; then\n  if grep -rn 'sk-[a-zA-Z0-9]\\{20,\\}\\|AKIA[A-Z0-9]\\{16\\}\\|ghp_[a-zA-Z0-9]\\{36\\}\\|password\\s*=\\s*[\"'\\'']\\'  \"$FILE\" 2>/dev/null; then\n    echo '[BSD 보안 훅] ⛔ API 키 또는 시크릿이 감지되었습니다. 환경변수를 사용하세요.' >&2\n    exit 2\n  fi\nfi"
+          }
+        ],
+        "description": "코드에 API 키/시크릿 하드코딩 방지"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "#!/bin/bash\nTOOL_INPUT=\"$CLAUDE_TOOL_INPUT_COMMAND\"\nif echo \"$TOOL_INPUT\" | grep -qE '(npm run dev|next dev|node server)' 2>/dev/null; then\n  if ! command -v tmux &>/dev/null || [ -z \"$TMUX\" ]; then\n    echo '[BSD 훅] 💡 개발 서버는 tmux에서 실행하세요: tmux new -s dev' >&2\n  fi\nfi"
+          }
+        ],
+        "description": "개발 서버 실행 시 tmux 사용 권장"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "#!/bin/bash\nFILE=\"$CLAUDE_TOOL_INPUT_FILE_PATH\"\nif [ -n \"$FILE\" ] && echo \"$FILE\" | grep -qE '\\.(ts|tsx|js|jsx)$'; then\n  if grep -n 'console\\.log' \"$FILE\" 2>/dev/null | head -3; then\n    echo '[BSD 훅] ⚠️ console.log가 발견되었습니다. 프로덕션 코드에서는 제거하세요.' >&2\n  fi\nfi"
+          }
+        ],
+        "description": "console.log 사용 경고"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "#!/bin/bash\nif [ -f MEMORY.md ]; then\n  echo \"\\n### 세션 종료: $(date '+%Y-%m-%d %H:%M')\" >> MEMORY.md\n  echo '세션 상태가 MEMORY.md에 기록되었습니다.'\nfi"
+          }
+        ],
+        "description": "세션 종료 시 MEMORY.md에 타임스탬프 기록"
+      }
+    ]
+  }
+}

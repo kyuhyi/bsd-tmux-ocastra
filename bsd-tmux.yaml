@@ -1,0 +1,17 @@
+session_name: bsd
+start_directory: .
+environment:
+  TERM: xterm-256color
+  COLORTERM: truecolor
+  FORCE_COLOR: "1"
+windows:
+  - window_name: main
+    layout: main-vertical
+    options:
+      main-pane-width: 110
+    panes:
+      - echo '------------------------------------------------' && echo 'BSD Claude Team Agent Mode Activated' && echo '우측 패인 2=기획자, 3=프론트엔드, 4=백엔드, 5=검수자' && echo '팁 - 그냥 기획자 프론트엔드 소환해줘 라고만 말해도 알아서 우측 화면에 띄웁니다' && echo '------------------------------------------------' && CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=0 claude
+      - echo '=== 기획자 (Planner) 대기 중 ===' && echo '리더는 이 패인에 tmux send-keys -t bsd:1.2 claude C-m 명령으로 나를 소환해주세요.'
+      - echo '=== 프론트엔드 (Frontend) 대기 중 ===' && echo '리더는 이 패인에 tmux send-keys -t bsd:1.3 claude C-m 명령으로 나를 소환해주세요.'
+      - echo '=== 백엔드 (Backend) 대기 중 ===' && echo '리더는 이 패인에 tmux send-keys -t bsd:1.4 claude C-m 명령으로 나를 소환해주세요.'
+      - echo '=== 검수자 (QA) 대기 중 ===' && echo '리더는 이 패인에 tmux send-keys -t bsd:1.5 claude C-m 명령으로 나를 소환해주세요.'
